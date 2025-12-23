@@ -9,7 +9,7 @@ class BarangModel extends Model
     protected $table = 'barang';
     protected $primaryKey = 'id_barang';
     protected $useTimestamps = true;
-    protected $allowedFields = ['id_barang', 'nm_barang', 'spek', 'satuan', 'stok'];
+    protected $allowedFields = ['id_barang', 'nm_barang', 'spek', 'hrg_barang', 'satuan', 'stok'];
 
     public function kodegen()
     {

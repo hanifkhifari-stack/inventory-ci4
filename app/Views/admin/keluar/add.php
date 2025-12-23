@@ -92,6 +92,36 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <label for="koordinat_latitude" class="col-sm-2 col-form-label">Koordinat Latitude</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="3" id="koordinat_latitude" name="koordinat_latitude"><?= old('koordinat_latitude'); ?></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="koordinat_longitude" class="col-sm-2 col-form-label">Koordinat Longitude</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="3" id="koordinat_longitude" name="koordinat_longitude"><?= old('koordinat_longitude'); ?></textarea>
+                            </div>
+                        </div>
+                                
+                        <div class="form-group row">
+                            <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="3" id="alamat" name="alamat"><?= old('alamat'); ?></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10">
+                                <button type="button" class="btn btn-info btn-sm" onclick="ambilLokasiLengkap()">
+                                    📍 Ambil Koordinat & Alamat
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="float-right">
                             <button type="submit" class="btn btn-primary">Simpan</button>
                         </div>
@@ -101,6 +131,55 @@
         </div>
     </div>
 </div>
+
+<script>
+function ambilLokasiLengkap() {
+    if (!navigator.geolocation) {
+        alert("Browser tidak mendukung lokasi");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+
+        let lat = position.coords.latitude;
+        let lon = position.coords.longitude;
+
+        document.getElementById('koordinat_latitude').value = lat;
+        document.getElementById('koordinat_longitude').value = lon;
+
+        // 🔥 Panggil Controller CI4
+        fetch(`<?= base_url('keluar/reverse_geocode') ?>?lat=${lat}&lon=${lon}`)
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.address) {
+                    let alamat = [];
+
+                    if (data.address.road) alamat.push(data.address.road);
+                    if (data.address.village) alamat.push(data.address.village);
+                    if (data.address.suburb) alamat.push(data.address.suburb);
+                    if (data.address.city) alamat.push(data.address.city);
+                    if (data.address.county) alamat.push(data.address.county);
+                    if (data.address.state) alamat.push(data.address.state);
+
+                    document.getElementById('alamat').value = alamat.join(', ');
+                } else {
+                    document.getElementById('alamat').value = 'Alamat tidak ditemukan';
+                }
+
+            })
+            .catch(() => {
+                document.getElementById('alamat').value = 'Gagal mengambil alamat';
+            });
+
+    }, function() {
+        alert("Izin lokasi ditolak");
+    });
+}
+</script>
+
+
+
 
 <script>
     $(document).ready(function() {

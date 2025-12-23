@@ -15,6 +15,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="display_name" class="col-sm-2 col-form-label">Display name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control <?= ($validation->hasError('display_name')) ? 'is-invalid' : ''; ?>" id="display_name" name="display_name" value="<?= (old('display_name')) ? old('display_name') : $barang['display_name'] ?>">
+                            <div class="invalid-feedback">
+                                <?= $validation->getError('display_name'); ?>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="form-group row">
                         <label for="satuan" class="col-sm-2 col-form-label">Satuan</label>
@@ -30,6 +39,15 @@
                         <label for="spek" class="col-sm-2 col-form-label">Spesifikasi</label>
                         <div class="col-sm-10">
                             <textarea class="form-control" rows="3" id="spek" name="spek"><?= (old('spek')) ? old('spek') : $barang['spek'] ?></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="hrg_barang" class="col-sm-2 col-form-label">Harga Barang</label>
+                        <div class="col-sm-10">
+                            <input type="number" name="hrg_barang" class="form-control" 
+                                   value="<?= old('hrg_barang', $barang['hrg_barang'] ?? '') ?>" 
+                                   placeholder="Contoh: 50000">
                         </div>
                     </div>
 

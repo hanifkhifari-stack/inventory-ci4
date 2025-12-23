@@ -1,4 +1,4 @@
-<?= $this->extend('admin/layout/template'); ?>
+<?= $this->extend('admin/layout/template_qrcode'); ?>
 <?= $this->section('content'); ?>
 <?= $this->include('admin/layout/fungsi') ?>
 <?php
@@ -12,13 +12,6 @@ $mapsUrl = "https://www.google.com/maps?q={$lat},{$lng}";
         <div class="card">
             <div class="card-body">
                 <div class="form-group row">
-                    <div class="col-sm-6">
-                        <a href="<?= base_url('export') ?>" class="btn btn-default"><i class="fas fa-undo"></i> Kembali</a>
-                        <a href="<?= base_url('export/print/' . $keluar['id_keluar']) ?>" class="btn btn-danger"><i class="fas fa-print"></i> Print</a>
-                    </div>
-                    <div class="col-sm-6">
-                        <p class="float-right">Tanggal input : <?= datetime($keluar['created_at']) ?></p>
-                    </div>
                 </div>
 
                 <div class="form-group row">
@@ -26,8 +19,8 @@ $mapsUrl = "https://www.google.com/maps?q={$lat},{$lng}";
                     <p class="col-sm-10 col-form-label"><?= $keluar['id_keluar'] ?></p>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Tanggal Masuk</label>
-                    <p class="col-sm-10 col-form-label"><?= tanggal($keluar['tanggal']) ?></p>
+                    <label class="col-sm-2 col-form-label">Tanggal Keluar</label>
+                    <p class="col-sm-10 col-form-label"><?= datetime($keluar['created_at']) ?></p>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-2 col-form-label">Keterangan</label>

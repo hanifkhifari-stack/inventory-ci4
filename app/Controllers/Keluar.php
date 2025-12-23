@@ -168,7 +168,10 @@ class Keluar extends BaseController
         $keluar = [
             'id_keluar' => $idKeluar,
             'tanggal' => $tglKeluar,
-            'keterangan' =>  $this->request->getVar('keterangan')
+            'keterangan' =>  $this->request->getVar('keterangan'),
+            'koordinat_latitude' => $this->request->getVar('koordinat_latitude'),
+            'koordinat_longitude' => $this->request->getVar('koordinat_longitude'),
+            'alamat' => $this->request->getVar('alamat')
         ];
 
         $keluarDetail = array();
@@ -219,6 +222,102 @@ class Keluar extends BaseController
             'act'   => 'barang',
         ];
         return view('admin/keluar/detail', $data);
+    }
+
+    public function reverse_geocode()
+    {
+        $lat = $this->request->getGet('lat');
+        $lon = $this->request->getGet('lon');
+
+        $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon&addressdetails=1";
+
+        $opts = [
+            "http" => [
+                "header" => "User-Agent: DRT-Inventory/1.0\r\n"
+            ]
+        ];
+
+        $context = stream_context_create($opts);
+        $res = file_get_contents($url, false, $context);
+
+        return $this->response->setJSON(json_decode($res, true));
+    }
+
+    public function detail_qrcode($idKeluar)
+    {
+        $keluar = $this->keluarModel->find($idKeluar);
+        $keluarDetail = $this->keluarDetailModel->detail($idKeluar);
+
+        if (empty($keluar)) {
+            session()->setflashdata('failed', 'Oops... Data tidak ditemukan. Silahkan pilih data.');
+            return redirect()->to(base_url('/export'))->withInput();
+        }
+
+        $data = [
+            'title' => 'Detail Barang',
+            'keluar' => $keluar,
+            'keluarDetail' => $keluarDetail,
+            'act'   => 'barang',
+        ];
+        return view('admin/keluar/qr_detail', $data);
+    }
+
+    public function cetak_qr($idKeluar)
+    {
+        $keluar = $this->keluarModel->find($idKeluar);
+        $keluarDetail = $this->keluarDetailModel->detail($idKeluar);
+
+        if (!$keluar) {
+            session()->setFlashdata('failed', 'Data barang tidak ditemukan');
+            return redirect()->to(base_url('export'));
+        }
+
+    // Load TCPDF
+    require_once APPPATH . 'ThirdParty/tcpdf/tcpdf.php';
+
+    $pdf = new \TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+
+    // Setting dokumen
+    $pdf->SetCreator('DRT Inventory');
+    $pdf->SetAuthor('DRT Inventory');
+    $pdf->SetTitle('QR Barang');
+    $pdf->SetMargins(20, 20, 20);
+    $pdf->AddPage();
+
+    // Style QR
+    $style = [
+        'border' => 0,
+        'padding' => 2,
+        'fgcolor' => [0, 0, 0],
+        'bgcolor' => false,
+    ];
+
+    // Isi QR (URL detail barang)
+    $qrText = base_url('export/detail_qrcode/' . $keluar['id_keluar']);
+
+    // Cetak QR
+    $pdf->write2DBarcode(
+        $qrText,
+        'QRCODE,H',
+        60,
+        40,
+        80,
+        80,
+        $style,
+        'N'
+    );
+
+    // Teks di bawah QR
+    $pdf->SetY(130);
+    $pdf->SetFont('helvetica', 'B', 12);
+    $pdf->Cell(0, 8, $keluar['id_keluar'], 0, 1, 'C');
+
+    $pdf->SetFont('helvetica', '', 10);
+    $pdf->Cell(0, 6, 'ID: ' . $keluar['id_keluar'], 0, 1, 'C');
+
+    // Output PDF
+    $pdf->Output('QR_' . $keluar['id_keluar'] . '.pdf', 'I');
+    exit;
     }
 
     function print($idKeluar)

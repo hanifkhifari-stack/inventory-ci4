@@ -49,6 +49,7 @@ $routes->post('/admin/update/(:segment)', 'Users::ubah_data/$1', ['filter' => 'a
 $routes->get('/admin/(:segment)', 'Users::detail/$1', ['filter' => 'auth', 'filter' => 'authadmin']);
 $routes->post('/admin/searching', 'Users::pencarian', ['filter' => 'auth', 'filter' => 'authadmin']);
 $routes->get('/admin/search/(:segment)', 'Users::cari/$1', ['filter' => 'auth', 'filter' => 'authadmin']);
+$routes->get('/admin/delete/(:segment)', 'Users::hapus/$1', ['filter' => 'auth', 'filter' => 'authadmin']);
 
 $routes->get('/profile', 'Users::profil', ['filter' => 'auth']);
 $routes->get('/password', 'Users::pass', ['filter' => 'auth']);
@@ -63,6 +64,15 @@ $routes->post('/item/update/(:segment)', 'Barang::ubah_data/$1', ['filter' => 'a
 $routes->get('/item/(:segment)', 'Barang::detail/$1', ['filter' => 'auth']);
 $routes->post('/item/searching', 'Barang::pencarian', ['filter' => 'auth']);
 $routes->get('/item/search/(:segment)', 'Barang::cari/$1', ['filter' => 'auth']);
+$routes->get('/item/delete/(:segment)', 'Barang::hapus/$1', ['filter' => 'auth']);
+$routes->get('item/delete/(:any)', 'Barang::hapus/$1');
+$routes->group('item', function($routes) {
+    $routes->get('/', 'Barang::index');
+    $routes->get('detail/(:any)', 'Barang::detail/$1');
+    $routes->get('detail_qrcode/(:any)', 'Barang::detail_qrcode/$1');
+    $routes->get('cetak_qr/(:any)', 'Barang::cetak_qr/$1');
+});
+
 
 $routes->get('/supply', 'Suplai::index', ['filter' => 'auth']);
 $routes->get('/supply/new', 'Suplai::tambah', ['filter' => 'auth']);
@@ -87,6 +97,13 @@ $routes->get('/export/(:segment)', 'Keluar::detail/$1', ['filter' => 'auth']);
 $routes->post('/export/searching', 'Keluar::pencarian', ['filter' => 'auth']);
 $routes->get('/export/search/(:segment)', 'Keluar::cari/$1', ['filter' => 'auth']);
 $routes->get('/export/print/(:segment)', 'Keluar::print/$1', ['filter' => 'auth']);
+$routes->get('export/reverse-geocode', 'Keluar::reverse_geocode');
+$routes->group('export', function($routes) {
+    $routes->get('/', 'Keluar::index');
+    $routes->get('detail/(:any)', 'Keluar::detail/$1');
+    $routes->get('detail_qrcode/(:any)', 'Keluar::detail_qrcode/$1');
+    $routes->get('cetak_qr/(:any)', 'Keluar::cetak_qr/$1');
+});
 
 $routes->get('/history', 'History::index', ['filter' => 'auth']);
 $routes->post('/history/searching', 'History::pencarian', ['filter' => 'auth']);

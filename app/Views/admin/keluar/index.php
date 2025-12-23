@@ -38,6 +38,7 @@
                                 <td align="left"><?= nl2br($data['keterangan']) ?></td>
                                 <td>
                                     <a href="<?= base_url('export/' . $data['id_keluar']) ?>" class="btn btn-info btn-sm"><i class="fas fa-eye"></i> Detail</a>
+                                    <a href="<?= base_url('export/cetak_qr/' . $data['id_keluar']) ?>" class="btn btn-primary btn-sm"><i class="fas fa-qrcode"></i></a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

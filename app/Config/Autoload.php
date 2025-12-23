@@ -65,6 +65,8 @@ class Autoload extends AutoloadConfig
 	 */
 	public $classmap = [];
 
+	public $helpers = ['qr'];
+
 	/**
 	 * -------------------------------------------------------------------
 	 * Files

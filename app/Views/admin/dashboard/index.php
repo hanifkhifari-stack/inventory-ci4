@@ -15,6 +15,7 @@
                         <thead align="center">
                             <td style="width: 120px;">ID</td>
                             <td>Nama Barang</td>
+                            <td>Display Name</td>
                             <td style="width: 150px;">Stok</td>
                         </thead>
                         <tbody>
@@ -22,6 +23,7 @@
                                 <tr align="center">
                                     <td><?= $data['id_barang'] ?></td>
                                     <td align="left"><?= $data['nm_barang'] ?></td>
+                                    <td align="left"><?= $data['display_name'] ?></td>
                                     <td><?= $data['stok'] . ' ' . $data['satuan'] ?></td>
                                 </tr>
                             <?php endforeach; ?>
